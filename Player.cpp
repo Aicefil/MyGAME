@@ -98,7 +98,7 @@ void Player::Update(const Map& map)
         float dx = x - e.x;
         float dy = y - e.y;
 
-        if (dx * dx + dy * dy < 16 * 16)
+        if (dx * dx + dy * dy < 12 * 12)
         {
             Damage(1);
             break;
@@ -122,44 +122,49 @@ void Player::Draw()
     }
 
     // 影
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120);
-    DrawOval(x, y + 10, 16, 6,
-        GetColor(0, 0, 0), TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+    DrawOval(
+        (int)x,
+        (int)y + 8,
+        12,     // 12
+        4,      // 4
+        GetColor(0, 0, 0),
+        TRUE
+    );
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
     // 本体
     DrawRotaGraphF(
         x,
         y,
-        0.5f,
+        0.38f,   // 0.38
         angle,
         img,
         TRUE
     );
 
-    // 残弾表示 
-    int bulletSpacing = 10;
+    // 残弾表示
+    int bulletSpacing = 8;
 
     for (int i = 0; i < ammo; i++)
     {
         DrawCircle(
             (int)x - (ammo * bulletSpacing) / 2 + i * bulletSpacing,
-            (int)y - 40,   // キャラの上
-            3,
+            (int)y - 28,   // -40 → -28
+            2,             // 3 → 2
             GetColor(255, 220, 120),
             TRUE
         );
     }
 
-    // リロード表示 
+    // リロード表示
     if (ammo == 0)
     {
-        // 点滅
         if ((reloadTime / 10) % 2 == 0)
         {
             DrawFormatString(
-                (int)x - 40,
-                (int)y - 70,
+                (int)x - 35,
+                (int)y - 45,
                 GetColor(255, 80, 80),
                 "Reloading..."
             );

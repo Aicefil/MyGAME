@@ -13,22 +13,29 @@ Game::Game() : player(640, 360)
 
 void Game::Init()
 {
-    EnemyManager::Init(5);
+    wave = 1;
+    waveTextTimer = 120;
+
+    EnemyManager::Init(2 + wave * 2, wave);
 }
 
 void Game::Update()
 {
+    if (waveTextTimer > 0)
+        waveTextTimer--;
+
     // ヒットストップ中
     if (hitStopTimer > 0)
     {
         hitStopTimer--;
-        return;  // 更新停止
+        return;
     }
 
     player.Update(map);
     BulletManager::UpdateAll(map);
-    EnemyManager::UpdateAll(player.x, player.y);
+    EnemyManager::UpdateAll(player.x, player.y, map);
 
+    // 敵が全滅したら
     if (EnemyManager::enemies.empty())
     {
         spawnTimer++;
@@ -36,8 +43,21 @@ void Game::Update()
         if (spawnTimer > 120)
         {
             spawnTimer = 0;
-            wave++;
-            EnemyManager::Init(wave + 3);
+
+            // 3ウェーブまで
+            if (wave < 3)
+            {
+                wave++;
+                waveTextTimer = 120;
+
+                EnemyManager::Init(2 + wave * 2, wave);
+            }
+            else
+            {
+                // ゲームクリア
+                gameClear = true;
+                return;
+            }
         }
     }
 }
@@ -46,7 +66,6 @@ void Game::Draw()
 {
     map.Draw();
 
-    // 描画用構造体
     struct DrawObj
     {
         float y;
@@ -54,6 +73,29 @@ void Game::Draw()
     };
 
     std::vector<DrawObj> drawList;
+
+    // WAVE表示
+    if (waveTextTimer > 0)
+    {
+        DrawFormatString(
+            540,
+            200,
+            GetColor(255, 255, 0),
+            "WAVE %d",
+            wave
+        );
+    }
+
+    // ゲームクリア 
+    if (gameClear)
+    {
+        DrawString(
+            560,
+            350,
+            "GAME CLEAR!",
+            GetColor(255, 255, 0)
+        );
+    }
 
     // プレイヤー
     drawList.push_back({
@@ -86,15 +128,19 @@ void Game::Draw()
             return a.y < b.y;
         });
 
-    // 描画実行
+    // 描画
     for (auto& obj : drawList)
         obj.drawFunc();
 
-    //独自カーソル
+    // カーソル
     int mx, my;
     GetMousePoint(&mx, &my);
 
-    DrawCircle(mx, my, 5,
+    DrawCircle(
+        mx,
+        my,
+        5,
         GetColor(255, 255, 0),
-        TRUE);
+        TRUE
+    );
 }

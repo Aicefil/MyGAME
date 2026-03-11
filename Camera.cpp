@@ -13,7 +13,7 @@ void Camera::Update(const Map& map)
     const float screenW = 1280.0f;
     const float screenH = 720.0f;
 
-    // ★ タイル数 × タイルサイズ でピクセル計算
+    // タイル数 × タイルサイズ でピクセル計算
     float mapPixelW = Map::WIDTH * Map::TILE;
     float mapPixelH = Map::HEIGHT * Map::TILE;
 

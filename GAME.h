@@ -1,19 +1,20 @@
 #pragma once
 #include "Player.h"
 #include "Map.h"
-#include "Camera.h"
 
 class Game
 {
 public:
     Player player;
     Map map;
-    Camera camera;
 
     int hitStopTimer = 0;
 
     int spawnTimer = 0;
     int wave = 1;
+    int waveTextTimer = 0;
+
+    bool gameClear = false;
 
     Game();
 

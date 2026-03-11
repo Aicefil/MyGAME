@@ -1,24 +1,22 @@
 #pragma once
 #include <DxLib.h>
-#include "Camera.h"
+#include "Map.h"
 
-// ===============================
-// 敵クラス
-// ・プレイヤーを追尾
-// ・死亡フラグを持つ
-// ===============================
+// プレイヤーを追尾
+// 死亡フラグを持つ
 class Enemy
 {
 public:
+
     float x, y;
-    float speed = 1.0f;
+    float speed;
 
     bool isDead = false;
 
-    Enemy(float _x, float _y);
+    Enemy(float _x, float _y, int wave);
 
     // プレイヤー座標を受け取り追尾
-    void Update(float px, float py);
+    void Update(float px, float py, const Map& map);
 
     void Draw();
 };

@@ -2,7 +2,6 @@
 #include "Map.h"
 #include "EnemyManager.h"
 #include "BulletManager.h"
-#include "Camera.h"
 
 // コンストラクタ
 Player::Player(float _x, float _y)
@@ -49,7 +48,7 @@ void Player::Update(const Map& map)
     float prevX = x;
     float prevY = y;
 
-    float speed = 3.0f;
+    float speed = 1.2f;
 
     if (CheckHitKey(KEY_INPUT_W)) y -= speed;
     if (CheckHitKey(KEY_INPUT_S)) y += speed;

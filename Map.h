@@ -4,9 +4,9 @@
 class Map
 {
 public:
-    static const int TILE = 32;
-    static const int WIDTH = 40;   // 40 Å~ 32 = 1280
-    static const int HEIGHT = 22;  // 22 Å~ 32 = 704
+    static const int TILE = 64;
+    static const int WIDTH = 20;   
+    static const int HEIGHT = 11;  
 
     int tiles[HEIGHT][WIDTH];
 

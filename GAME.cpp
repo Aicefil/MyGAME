@@ -64,7 +64,9 @@ void Game::Update()
 
 void Game::Draw()
 {
-    map.Draw();
+    // îwåiÅEè·äQï®
+    map.DrawBackground();
+    map.DrawObstacles();
 
     struct DrawObj
     {
@@ -98,35 +100,19 @@ void Game::Draw()
     }
 
     // ÉvÉåÉCÉÑÅ[
-    drawList.push_back({
-        player.y,
-        [&]() { player.Draw(); }
-        });
+    drawList.push_back({ player.y, [&]() { player.Draw(); } });
 
     // ìG
     for (auto& e : EnemyManager::enemies)
-    {
-        drawList.push_back({
-            e.y,
-            [&e]() { e.Draw(); }
-            });
-    }
+        drawList.push_back({ e.y, [&e]() { e.Draw(); } });
 
     // íe
     for (auto& b : BulletManager::bullets)
-    {
-        drawList.push_back({
-            b.y,
-            [&b]() { b.Draw(); }
-            });
-    }
+        drawList.push_back({ b.y, [&b]() { b.Draw(); } });
 
     // YÉ\Å[Ég
     std::sort(drawList.begin(), drawList.end(),
-        [](const DrawObj& a, const DrawObj& b)
-        {
-            return a.y < b.y;
-        });
+        [](const DrawObj& a, const DrawObj& b) { return a.y < b.y; });
 
     // ï`âÊ
     for (auto& obj : drawList)
@@ -135,12 +121,5 @@ void Game::Draw()
     // ÉJÅ[É\Éã
     int mx, my;
     GetMousePoint(&mx, &my);
-
-    DrawCircle(
-        mx,
-        my,
-        5,
-        GetColor(255, 255, 0),
-        TRUE
-    );
+    DrawCircle(mx, my, 5, GetColor(255, 255, 0), TRUE);
 }

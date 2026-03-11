@@ -7,12 +7,11 @@ Bullet::Bullet(float sx, float sy, float angle)
     x = sx;
     y = sy;
 
-    float speed = 7.0f;
-
+    const float speed = 7.0f;
     vx = cosf(angle) * speed;
     vy = sinf(angle) * speed;
 
-    dead = false;   // ”O‚Ì‚½‚ß‰Šú‰»
+    dead = false;
 }
 
 // ˆÚ“®ˆ—
@@ -22,14 +21,14 @@ void Bullet::Update()
     y += vy;
 }
 
-// •`‰æ
+// •`‰æˆ—i‰~‚Å•`‰æj
 void Bullet::Draw()
 {
     DrawCircle(
         (int)x,
         (int)y,
-        4,
-        GetColor(255, 220, 120),
-        TRUE
+        4,                         // ”¼Œa
+        GetColor(255, 220, 120),   // F
+        TRUE                       // “h‚è‚Â‚Ô‚µ
     );
 }

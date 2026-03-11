@@ -23,5 +23,4 @@ public:
     void Draw();
 };
 
-// ƒNƒ‰ƒX‚ÌŠO‚É‘‚­
 extern Game* gGame;

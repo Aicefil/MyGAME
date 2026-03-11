@@ -1,21 +1,15 @@
 #pragma once
 #include <DxLib.h>
 
-// ===============================
-// 弾クラス
-// ・移動のみ担当
-// ・当たり判定はManager側
-// ===============================
 class Bullet
 {
 public:
-    float x, y;      // 位置
-    float vx, vy;    // 速度
+    float x, y;      // 弾の位置
+    float vx, vy;    // 弾の速度
+    bool dead;       // 生存判定
 
-    bool dead = false;      // 消滅フラグ
+    Bullet(float sx, float sy, float angle); // コンストラクタ
 
-    Bullet(float sx, float sy, float angle);
-
-    void Update();
-    void Draw();
+    void Update();  // 移動処理
+    void Draw();    // 描画処理
 };

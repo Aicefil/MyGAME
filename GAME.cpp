@@ -9,33 +9,53 @@
 
 Game* gGame = nullptr;
 
+// 画像を中央に描画する関数
+void DrawCenter(int img)
+{
+    int w, h;
+    GetGraphSize(img, &w, &h);
+    DrawGraph((1280 - w) / 2, (720 - h) / 2, img, TRUE);
+}
+
 Game::Game() : player(640, 360)
 {
+    imgTitle = LoadGraph("assets/title.png");
+    imgGameOver = LoadGraph("assets/gameover.png");
+    imgClear = LoadGraph("assets/clear.png");
 }
 
 void Game::Init()
 {
     wave = 1;
+
     spawnTimer = 0;
     waveTextTimer = 120;
+    hitStopTimer = 0;
 
     gameClear = false;
 
-    EnemyManager::Init(2 + wave * 2, wave);
+    // プレイヤーリセット
+    player = Player(640, 360);
 
-    SetMouseDispFlag(FALSE);  // OSカーソル消す
+    EnemyManager::enemies.clear();
+    EnemyManager::Init(5 * wave, wave);
+
+    SetMouseDispFlag(FALSE);
 
     state = STATE_WAVE_START;
 }
 
 void Game::Update()
 {
+    static int spacePrev = 0;
+    int spaceNow = CheckHitKey(KEY_INPUT_SPACE);
+
     switch (state)
     {
 
     case STATE_TITLE:
 
-        if (GetMouseInput() & MOUSE_INPUT_LEFT)
+        if (spaceNow && !spacePrev)
         {
             Init();
         }
@@ -64,7 +84,7 @@ void Game::Update()
 
     case STATE_CLEAR:
 
-        if (GetMouseInput() & MOUSE_INPUT_LEFT)
+        if (spaceNow && !spacePrev)
         {
             state = STATE_TITLE;
         }
@@ -74,13 +94,15 @@ void Game::Update()
 
     case STATE_GAMEOVER:
 
-        if (GetMouseInput() & MOUSE_INPUT_LEFT)
+        if (spaceNow && !spacePrev)
         {
             state = STATE_TITLE;
         }
 
         break;
     }
+
+    spacePrev = spaceNow;
 }
 
 void Game::UpdatePlaying()
@@ -97,14 +119,14 @@ void Game::UpdatePlaying()
 
     EnemyManager::UpdateAll(player.x, player.y, map);
 
-    // ===== プレイヤー死亡 =====
+    // プレイヤー死亡
     if (player.isDead)
     {
         state = STATE_GAMEOVER;
         return;
     }
 
-    // ===== 敵が全滅したら =====
+    // 敵が全滅
     if (EnemyManager::enemies.empty())
     {
         spawnTimer++;
@@ -113,28 +135,25 @@ void Game::UpdatePlaying()
         {
             spawnTimer = 0;
 
-            // 次Wave
-            if (wave < 3)
+            if (wave == 3)
+            {
+                gameClear = true;
+                state = STATE_CLEAR;
+            }
+            else
             {
                 wave++;
 
                 waveTextTimer = 120;
 
-                EnemyManager::Init(2 + wave * 2, wave);
+                EnemyManager::Init(5 * wave, wave);
 
                 state = STATE_WAVE_START;
-            }
-            else
-            {
-                // 全Wave終了
-                gameClear = true;
-                state = STATE_CLEAR;
             }
         }
     }
     else
     {
-        // 敵がいるならタイマーリセット
         spawnTimer = 0;
     }
 }
@@ -150,7 +169,8 @@ void Game::Draw()
 
     case STATE_TITLE:
 
-        DrawString(560, 300, "CLICK TO START", GetColor(255, 255, 255));
+        DrawCenter(imgTitle);
+        DrawString(560, 520, "PRESS SPACE", GetColor(255, 255, 255));
 
         break;
 
@@ -181,12 +201,8 @@ void Game::Draw()
 
         DrawGame();
 
-        DrawString(
-            560,
-            350,
-            "GAME CLEAR!",
-            GetColor(255, 255, 0)
-        );
+        DrawCenter(imgClear);
+        DrawString(560, 520, "PRESS SPACE", GetColor(255, 255, 255));
 
         break;
 
@@ -195,12 +211,8 @@ void Game::Draw()
 
         DrawGame();
 
-        DrawString(
-            560,
-            350,
-            "GAME OVER",
-            GetColor(255, 0, 0)
-        );
+        DrawCenter(imgGameOver);
+        DrawString(560, 520, "PRESS SPACE", GetColor(255, 255, 255));
 
         break;
     }
@@ -234,17 +246,13 @@ void Game::DrawGame()
 
     std::vector<DrawObj> drawList;
 
-
     drawList.push_back({ player.y, [&]() { player.Draw(); } });
-
 
     for (auto& e : EnemyManager::enemies)
         drawList.push_back({ e.y, [&e]() { e.Draw(); } });
 
-
     for (auto& b : BulletManager::bullets)
         drawList.push_back({ b.y, [&b]() { b.Draw(); } });
-
 
     std::sort(
         drawList.begin(),
@@ -254,7 +262,6 @@ void Game::DrawGame()
             return a.y < b.y;
         }
     );
-
 
     for (auto& obj : drawList)
         obj.drawFunc();

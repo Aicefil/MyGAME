@@ -54,10 +54,24 @@ void Player::Update(const Map& map)
 
     // à⁄ìÆ
     float speed = 1.5f;
-    if (CheckHitKey(KEY_INPUT_W)) y -= speed;
-    if (CheckHitKey(KEY_INPUT_S)) y += speed;
-    if (CheckHitKey(KEY_INPUT_A)) x -= speed;
-    if (CheckHitKey(KEY_INPUT_D)) x += speed;
+
+    float nextX = x;
+    float nextY = y;
+
+    if (CheckHitKey(KEY_INPUT_W)) nextY -= speed;
+    if (CheckHitKey(KEY_INPUT_S)) nextY += speed;
+    if (CheckHitKey(KEY_INPUT_A)) nextX -= speed;
+    if (CheckHitKey(KEY_INPUT_D)) nextX += speed;
+
+    if (!map.IsWallByWorld(nextX, y))
+    {
+        x = nextX;
+    }
+
+    if (!map.IsWallByWorld(x, nextY))
+    {
+        y = nextY;
+    }
 
     // âÊñ äOêßå¿
     if (x < 20) x = 20;
@@ -114,12 +128,6 @@ void Player::Update(const Map& map)
 // ï`âÊèàóù
 void Player::Draw()
 {
-    if (isDead)
-    {
-        DrawString(550, 350, "GAME OVER", GetColor(255, 0, 0));
-        return;
-    }
-
     // ñ≥ìGéûä‘ì_ñ≈èàóù
     if (invincibleTime > 0 && (invincibleTime / 5) % 2 == 0)
         return;

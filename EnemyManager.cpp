@@ -18,23 +18,23 @@ void EnemyManager::Init(int count, int wave)
 
         if (side == 0) // ã
         {
-            x = rand() % 1280;
-            y = -40;
+            x = rand() % 1200 + 40;
+            y = 0;
         }
         else if (side == 1) // ‰º
         {
-            x = rand() % 1280;
-            y = 760;
+            x = rand() % 1200 + 40;
+            y = 720;
         }
         else if (side == 2) // ¶
         {
-            x = -40;
-            y = rand() % 720;
+            x = 0;
+            y = rand() % 640 + 40;
         }
         else // ‰E
         {
-            x = 1320;
-            y = rand() % 720;
+            x = 1280;
+            y = rand() % 640 + 40;
         }
 
         enemies.emplace_back(x, y, wave);
@@ -46,19 +46,27 @@ void EnemyManager::Init(int count, int wave)
 void EnemyManager::UpdateAll(float px, float py, const Map& map)
 {
     for (auto& e : enemies)
+    {
         e.Update(px, py, map);
+    }
 
     enemies.erase(
         std::remove_if(
             enemies.begin(),
             enemies.end(),
-            [](Enemy& e) { return e.isDead; }),
+            [](Enemy& e)
+            {
+                return e.isDead;
+            }),
         enemies.end());
 }
+
 
 // •`‰æ
 void EnemyManager::DrawAll()
 {
     for (auto& e : enemies)
+    {
         e.Draw();
+    }
 }

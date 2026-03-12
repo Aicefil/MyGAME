@@ -22,8 +22,14 @@ private:
 
 public:
 
+    int imgTitle;
+    int imgGameOver;
+    int imgClear;
+
     Player player;
     Map map;
+
+    int mousePrev = 0;
 
     int hitStopTimer = 0;
 

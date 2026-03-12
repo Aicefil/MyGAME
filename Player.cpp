@@ -12,7 +12,7 @@ Player::Player(float _x, float _y)
     img = LoadGraph("assets/player.png");
 
     hp = maxHp;
-    life = 2;
+    life = 1;
     invincibleTime = 0;
     isDead = false;
     ammo = 6;

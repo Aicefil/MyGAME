@@ -18,26 +18,14 @@ void Enemy::Update(float px, float py, const Map& map)
 
     float len = sqrtf(dx * dx + dy * dy);
 
-    if (len <= 40) return;
-
     float moveX = (dx / len) * speed;
     float moveY = (dy / len) * speed;
 
-    // X•ûŒüˆÚ“®
-    float nextX = x + moveX;
-    if (!map.IsWallByWorld(nextX, y))
-    {
-        x = nextX;
-    }
+    // •Ç–³Ž‹‚ÅˆÚ“®
+    x += moveX;
+    y += moveY;
 
-    // Y•ûŒüˆÚ“® 
-    float nextY = y + moveY;
-    if (!map.IsWallByWorld(x, nextY))
-    {
-        y = nextY;
-    }
-
-    // “G“¯Žm‚Ì‰Ÿ‚µ‡‚¢ 
+    // “G“¯Žm‚Ì‰Ÿ‚µ‡‚¢
     for (auto& other : EnemyManager::enemies)
     {
         if (&other == this) continue;

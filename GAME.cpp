@@ -9,6 +9,8 @@
 
 Game* gGame = nullptr;
 
+int fontStart;
+
 // 画像を中央に描画する関数
 void DrawCenter(int img)
 {
@@ -22,6 +24,8 @@ Game::Game() : player(640, 360)
     imgTitle = LoadGraph("assets/title.png");
     imgGameOver = LoadGraph("assets/gameover.png");
     imgClear = LoadGraph("assets/clear.png");
+
+    fontStart = CreateFontToHandle(NULL, 48, 3); 
 }
 
 void Game::Init()
@@ -54,13 +58,28 @@ void Game::Update()
     {
 
     case STATE_TITLE:
+    {
+        int mx, my;
+        GetMousePoint(&mx, &my);
 
-        if (spaceNow && !spacePrev)
+        int click = GetMouseInput();
+
+        int x = 530;
+        int y = 520;
+
+        // フォントサイズ対応
+        int w = GetDrawStringWidthToHandle("ゲーム開始", -1, fontStart);
+        int h = GetFontSizeToHandle(fontStart);
+
+        if (mx > x && mx < x + w &&
+            my > y && my < y + h &&
+            (click & MOUSE_INPUT_LEFT))
         {
             Init();
         }
 
         break;
+    }
 
 
     case STATE_WAVE_START:
@@ -168,11 +187,31 @@ void Game::Draw()
     {
 
     case STATE_TITLE:
-
+    {
         DrawCenter(imgTitle);
-        DrawString(560, 520, "PRESS SPACE", GetColor(255, 255, 255));
+
+        int x = 530;
+        int y = 520;
+
+        int mx, my;
+        GetMousePoint(&mx, &my);
+
+        int w = GetDrawStringWidthToHandle("ゲーム開始", -1, fontStart);
+        int h = GetFontSizeToHandle(fontStart);
+
+        int color = GetColor(255, 255, 255);
+
+        // マウスが文字の上
+        if (mx > x && mx < x + w &&
+            my > y && my < y + h)
+        {
+            color = GetColor(255, 220, 120);
+        }
+
+        DrawStringToHandle(x, y, "ゲーム開始", color, fontStart);
 
         break;
+    }
 
 
     case STATE_WAVE_START:

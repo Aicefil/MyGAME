@@ -13,4 +13,6 @@ public:
     static void UpdateAll(Map& map);
 
     static void DrawAll();
+
+    static void Clear();
 };

@@ -1,21 +1,55 @@
 #pragma once
 #include <DxLib.h>
+#include <vector>
 
 class Map
 {
 public:
-    Map();                  // コンストラクタ
+    static const int WIDTH = 40;
+    static const int HEIGHT = 22;
+    static const int TILE = 32;
 
-    void DrawBackground();  // 背景だけ描画
-    void DrawObstacles();   // 障害物だけ描画
+    int tiles[HEIGHT][WIDTH];
+
+    Map();
+
+    void DrawBackground();
+    void DrawObstacles();
 
     bool IsWallByWorld(float wx, float wy) const;
+    bool IsWallForEnemy(float wx, float wy) const;
+
+    void Explode(int tx, int ty);
+
+    // エフェクト
+    void UpdateEffects();
+    void DrawEffects();
+
+    void ResetMap();
+    void ResetEffects();
 
 private:
-    static const int WIDTH = 20;   // 横タイル数
-    static const int HEIGHT = 15;   // 縦タイル数
-    static const int TILE = 64;   // タイル1マスのサイズ（px）
+    int stageImg;
 
-    int tiles[HEIGHT][WIDTH];        // マップデータ（0:床, 2:箱など）
-    int stageImg;                    // 背景画像ID
+    struct Particle
+    {
+        float x = 0.0f;
+        float y = 0.0f;
+        float vx = 0.0f;
+        float vy = 0.0f;
+        int timer = 0;
+    };
+
+    // ===== 爆発エフェクト =====
+    struct Explosion
+    {
+        float x = 0.0f;
+        float y = 0.0f;
+        float radius = 0.0f;
+        int timer = 0;
+
+        std::vector<Particle> particles;
+    };
+
+    std::vector<Explosion> explosions;
 };

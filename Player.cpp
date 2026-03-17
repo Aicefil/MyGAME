@@ -73,6 +73,49 @@ void Player::Update(const Map& map)
         y = nextY;
     }
 
+    float radius = 14.0f;
+
+    // プレイヤーのタイル位置
+    int cx = (int)(x / Map::TILE);
+    int cy = (int)(y / Map::TILE);
+
+    // 周囲9マスだけチェック（軽い）
+    for (int oy = -1; oy <= 1; oy++)
+    {
+        for (int ox = -1; ox <= 1; ox++)
+        {
+            int tx = cx + ox;
+            int ty = cy + oy;
+
+            if (tx < 0 || ty < 0 || tx >= Map::WIDTH || ty >= Map::HEIGHT) continue;
+
+            // 箱だけ判定（2=普通箱、3=爆発箱）
+            if (map.tiles[ty][tx] == 2 || map.tiles[ty][tx] == 3)
+            {
+                float bx = tx * Map::TILE + Map::TILE / 2.0f;
+                float by = ty * Map::TILE + Map::TILE / 2.0f;
+
+                float dx = x - bx;
+                float dy = y - by;
+
+                float dist = sqrtf(dx * dx + dy * dy);
+                float minDist = Map::TILE / 2.0f + radius;
+
+                if (dist < minDist)
+                {
+                    // ===== 押し戻し =====
+                    float overlap = minDist - dist;
+
+                    if (dist > 0)
+                    {
+                        x += (dx / dist) * overlap;
+                        y += (dy / dist) * overlap;
+                    }
+                }
+            }
+        }
+    }
+
     // 画面外制限
     if (x < 20) x = 20;
     if (y < 20) y = 20;
@@ -137,7 +180,7 @@ void Player::Draw()
     DrawOval((int)x, (int)y + 10, 18, 6, GetColor(0, 0, 0), TRUE);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-    // プレイヤー本体（回転なし）
+    // プレイヤー本体
     DrawRotaGraphF(x, y, 0.55f, 0.0f, img, TRUE);
 
     // 残弾表示
